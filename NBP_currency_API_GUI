@@ -4,13 +4,21 @@ from tkinter import messagebox
 import requests
 
 URL = 'http://api.nbp.pl/api/exchangerates/tables/A/'
-table = requests.get(URL)
-response = table.json()
+
+
      
 
 class CurrencyConverter(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
+
+        try:
+            table = requests.get(URL)
+            response = table.json()
+        except requests.exceptions.RequestException as e:
+            messagebox.showerror("Błąd połączenia", "Nie można połączyć się z serwerem. Sprawdź połączenie internetowe i spróbuj ponownie.")
+            self.destroy()
+            return
 
         self.title("Kalkulator Walut")
         self.geometry("260x300")
@@ -43,6 +51,8 @@ class CurrencyConverter(tk.Tk):
         self.button_about.pack(side="left", padx=5, pady=5)
 
     def calculate(self):
+        table = requests.get(URL)
+        response = table.json()
         currency_code = self.combobox_code.get()
         amount = float(self.entry_amount.get())
 
@@ -53,7 +63,7 @@ class CurrencyConverter(tk.Tk):
                 self.label_result.config(text=f'Po przeliczeniu: {result:.2f} PLN')
 
     def about(self):
-        messagebox.showinfo("O programie", "Kalkulator Walut v1.0\nAutor: Ramzeez88 . Na podstawie kodu od AdamR77")
+        messagebox.showinfo("O programie", "Kalkulator Walut v1.0\nAutor: Ramzeez88  \nNa podstawie kodu od AdamR77")
 
 
 if __name__ == "__main__":
